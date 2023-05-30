@@ -27,6 +27,6 @@ Resolvent: $C$ of Clauses $C_1, C_2$ iff $\exists l \in C_1, \neg l \in C2:\ C =
 
 Resolution: $\text{Res}\ M = M \cup \lbrace C \mid C\ \text{Resolvent of}\ C_1, C_2 \in M \rbrace$
   - $\text{Res}^{i + 1}\ M = \text{Res}\ \text{Res}^i\ M, \text{Res}^*\ M = \bigcup_{i \geq 0} \text{Res}^i\ M$
-  - $\exists i \leq 1:\ \text{Res}^*\ M = \text{Res}^i\ M$ (will terminate
+  - $\exists i \leq 1:\ \text{Res}^*\ M = \text{Res}^i\ M$ (will terminate)
 
 $$M\ \text{unsat} \Leftrightarrow \Box \in \text{Res}^*\ M$$
