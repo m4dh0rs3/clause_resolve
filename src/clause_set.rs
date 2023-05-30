@@ -1,6 +1,6 @@
 use crate::clause::Clause;
 
-/// Contains further resolvents of intial clauses
+/// Contains further resolvents of initial clauses
 /// with references to their indices
 pub(crate) struct ClauseSet(Vec<(usize, usize, Clause)>);
 
@@ -30,7 +30,7 @@ impl ClauseSet {
         batch
     }
 
-    /// Resolve unitl either empty clause
+    /// Resolve until either empty clause
     /// is contained or no new clauses can
     /// be resolved
     fn res(&mut self) -> bool {
