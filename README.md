@@ -5,7 +5,7 @@ by clause resolution.
 
 ## CNF as Clauses
 
-Variable: $x \in \N = \text{VAR}$
+Variable: $x \in \mathbb{N} = \text{VAR}$
   - Parsed as character `'A'..='z'`
   - Limited by word size (currently $\leq 32$)
 
