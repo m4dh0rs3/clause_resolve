@@ -15,6 +15,7 @@ impl ClauseSet {
             for j in 0..len {
                 if i != j {
                     if let Some(res) = Clause::res(self.0[i].2.clone(), self.0[j].2.clone()) {
+                        // println!("{}", res);
                         if res.is_empty() {
                             batch.push((i, j, res));
                             // Found empty clause
@@ -126,10 +127,10 @@ impl fmt::Display for ClauseSet {
 
         for (i, (_, _, clause)) in self.0.iter().enumerate() {
             if i != 0 {
-                write!(f, ",\n")?;
+                write!(f, ", ")?;
             }
 
-            write!(f, " {}", clause)?;
+            write!(f, "{}", clause)?;
         }
 
         write!(f, "}}")
