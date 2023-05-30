@@ -1,6 +1,6 @@
 # UNSAT by Clause Resolution
 
-Tries proving the unsatisfiability of a clause set / CNF
+Tries (WIP) proving the unsatisfiability of a clause set / CNF
 by clause resolution.
 
 ## CNF as Clauses
