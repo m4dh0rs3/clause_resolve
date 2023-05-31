@@ -8,44 +8,40 @@ pub(crate) struct Clause {
 }
 
 impl Clause {
-    /// Resolve two clauses in `O(1)`
+    /// Resolve two clauses in `O(|VAR|)`
     pub(crate) fn res(mut c0: Self, mut c1: Self) -> Option<Self> {
-        /// Returns the next smaller power of two
-        /// which is the first contained variable
-        fn prev_power_of_two(word: Word) -> Word {
-            (2 as Word).pow(word.trailing_zeros())
-        }
-
         let mut mask;
-
         if {
             // All complementing literals
             mask = c0.pos & c1.neg;
-            // If there are some
-            mask != 0
+            // If there are none
+            mask == 0
         } {
-            // Only resolve one literal
-            mask = !prev_power_of_two(mask);
+            // Switch out variables and check again
+            let tmp = c0;
+            c0 = c1;
+            c1 = tmp;
 
-            // Remove said literal
-            c0.pos &= mask;
-            c1.neg &= mask;
-
-            Some(Clause::union(c0, c1))
-        } else if {
-            // Also check for neg-pos pair
-            mask = c0.neg & c1.pos;
-            mask != 0
-        } {
-            mask = !prev_power_of_two(mask);
-
-            c0.neg &= mask;
-            c1.pos &= mask;
-
-            Some(Clause::union(c0, c1))
-        } else {
-            None
+            if {
+                mask = c0.pos & c1.neg;
+                mask == 0
+            } {
+                return None;
+            }
         }
+
+        // Returns the next smaller power of two,
+        // which is the first contained literal
+        // and invert this for masking
+        mask = !(2 as Word).pow(mask.trailing_zeros());
+
+        // Remove said literal
+        c0.pos &= mask;
+        c1.neg &= mask;
+
+        // Finally return all literals
+        // with one complement filtered out
+        Some(Clause::union(c0, c1))
     }
 
     /// Union of the set of literals
@@ -154,5 +150,47 @@ impl fmt::Display for Clause {
 impl fmt::Debug for Clause {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "C {{ pos: {:0b}, neg: {:0b} }}", self.pos, self.neg)
+    }
+}
+
+impl Clause {
+    #[deprecated(note = "replaced by `res`")]
+    pub(crate) fn res_deprc(mut c0: Self, mut c1: Self) -> Option<Self> {
+        /// Returns the next smaller power of two
+        /// which is the first contained variable
+        fn prev_power_of_two(word: Word) -> Word {
+            (2 as Word).pow(word.trailing_zeros())
+        }
+
+        let mut mask;
+
+        if {
+            // All complementing literals
+            mask = c0.pos & c1.neg;
+            // If there are some
+            mask != 0
+        } {
+            // Only resolve one literal
+            mask = !prev_power_of_two(mask);
+
+            // Remove said literal
+            c0.pos &= mask;
+            c1.neg &= mask;
+
+            Some(Clause::union(c0, c1))
+        } else if {
+            // Also check for neg-pos pair
+            mask = c0.neg & c1.pos;
+            mask != 0
+        } {
+            mask = !prev_power_of_two(mask);
+
+            c0.neg &= mask;
+            c1.pos &= mask;
+
+            Some(Clause::union(c0, c1))
+        } else {
+            None
+        }
     }
 }
