@@ -75,11 +75,11 @@ impl ClauseSet {
     pub(crate) fn proof_unsat(&mut self) -> String {
         // If resolution finds empty clause
         if self.res() {
-            let mut string = String::new();
+            let mut string = "unsat. proof:".to_string();
             self.format_unsat_proof(self.0.len() - 1, 0, &mut string);
             string
         } else {
-            "proof not found".to_string()
+            format!("sat. res*: {}", self)
         }
     }
 
@@ -87,7 +87,7 @@ impl ClauseSet {
     fn format_unsat_proof(&self, i: usize, depth: usize, string: &mut String) {
         let res = &self.0[i];
 
-        string.push_str(&format!("\n{}{}", &"|".repeat(depth), res.2));
+        string.push_str(&format!("\n{}{}", &" ".repeat(depth), res.2));
 
         if res.0 != res.1 {
             self.format_unsat_proof(res.0, depth + 1, string);

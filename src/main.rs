@@ -19,9 +19,10 @@ fn main() {
         )
         .proof_unsat()
     );
+
     // 3.2
     println!(
-        "{}",
+        "\n{}",
         S::from(
             "a -b -c -d
              a b
@@ -34,7 +35,7 @@ fn main() {
 
     // 6.1
     println!(
-        "{}",
+        "\n{}",
         S::from(
             "-a -b
              a c -d
@@ -44,9 +45,10 @@ fn main() {
         )
         .proof_unsat()
     );
+
     // 6.2
     println!(
-        "{}",
+        "\n{}",
         S::from(
             "c -d
              a b
