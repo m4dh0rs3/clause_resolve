@@ -59,7 +59,7 @@ impl ClauseSet {
             }
 
             // Now contains empty clause
-            if self.0[len - 1].2.is_empty() {
+            if self.0[self.0.len() - 1].2.is_empty() {
                 return true;
             }
 
@@ -72,39 +72,29 @@ impl ClauseSet {
 
     /// Try proving unsatisfiability by constructing
     /// the empty clause via clause resolution
-    pub(crate) fn proof_unsat(&mut self) -> Option<Vec<Clause>> {
+    pub(crate) fn proof_unsat(&mut self) -> String {
         // If resolution finds empty clause
         if self.res() {
-            let empty = &self.0[self.0.len() - 1];
-            let mut proof = self.construct_unsat_proof(empty.0, empty.1);
-            proof.push(Clause::new_empty());
-
-            Some(proof)
+            let mut string = String::new();
+            self.format_unsat_proof(self.0.len() - 1, 0, &mut string);
+            string
         } else {
-            None
+            "proof not found".to_string()
         }
     }
 
     /// Filter and sort the relevant clauses for the proof
-    fn construct_unsat_proof(&self, i: usize, j: usize) -> Vec<Clause> {
-        // Proof sequence contains at least the two clauses
-        let mut seq = Vec::with_capacity(2);
+    fn format_unsat_proof(&self, i: usize, depth: usize, string: &mut String) {
+        let res = &self.0[i];
 
-        let c0 = &self.0[i];
-        let c1 = &self.0[j];
+        string.push_str(&format!("\n{}{}", &"|".repeat(depth), res.2));
 
-        if c0.0 != c0.1 {
-            seq.append(&mut self.construct_unsat_proof(c0.0, c0.1))
+        if res.0 != res.1 {
+            self.format_unsat_proof(res.0, depth + 1, string);
+            self.format_unsat_proof(res.1, depth + 1, string);
+        } else {
+            string.push_str(" (input)");
         }
-
-        if c1.0 != c1.1 {
-            seq.append(&mut self.construct_unsat_proof(c1.0, c1.1))
-        }
-
-        seq.push(c0.2.clone());
-        seq.push(c1.2.clone());
-
-        seq
     }
 }
 
@@ -115,6 +105,17 @@ impl From<Vec<Clause>> for ClauseSet {
                 .enumerate()
                 .map(|(i, clause)| (i, i, clause))
                 .collect(),
+        )
+    }
+}
+
+impl From<&str> for ClauseSet {
+    fn from(string: &str) -> Self {
+        Self::from(
+            string
+                .lines()
+                .map(|line| Clause::from(line))
+                .collect::<Vec<Clause>>(),
         )
     }
 }
